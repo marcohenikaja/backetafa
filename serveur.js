@@ -8,7 +8,7 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
-app.get("/https://e-tafa.onrender.com",(req,res)=>{
+app.get("/",(req,res)=>{
  res.send("api running")   
 })
 app.use("/", route)
