@@ -165,4 +165,4 @@ const manaocommantera = async (req, res) => {
     //     console.log(error);
     // }
 }
-module.exports = { toususers, inscrit, login, toususers, message, makamessage, messagemaj, publication, makapub, getAllUser, manaocommantera };
+module.exports = {  inscrit, login, toususers, message, makamessage, messagemaj, publication, makapub, getAllUser, manaocommantera };
