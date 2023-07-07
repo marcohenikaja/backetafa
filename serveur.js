@@ -9,7 +9,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.get("/",(req,res)=>{
- res.send("api running")   
+ res.send("api running ee")   
 })
 app.use("/", route)
 
