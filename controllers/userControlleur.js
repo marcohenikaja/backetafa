@@ -2,6 +2,7 @@ const userLogin = require('../models/userModel');
 const UserLogin = require('../models/userModel');
 const Message = require('../models/messageModels');
 const Publication = require('../models/publicationModel')
+const Comment = require('../models/comment')
 
 const toususers = async (req, res) => {
     const userId = req.params.id;
@@ -153,16 +154,29 @@ const getAllUser = async (req, res) => {
     }
 }
 const manaocommantera = async (req, res) => {
-    const comment = req.body.comment;
-    const comment_id = req.body.userId;
-    const id = req.params.id;
-    // try {
-    //     const manova = await Publication.updateOne(
-    //         { _id: id },
-    //         { $set: { comment: comment, comment_id: comment_id } }
-    //     );
-    // } catch (error) {
-    //     console.log(error);
-    // }
+    const text = req.body.comment;
+    const userId = req.body.userId;
+    const id_pub = req.params.id;
+    const anarana = req.body.username;
+    try {
+        const commanty = await Comment.create({ text, id_pub, userId, anarana });
+        return res.send({ success: true })
+    } catch (error) {
+        console.log(error);
+    }
 }
-module.exports = {  inscrit, login, toususers, message, makamessage, messagemaj, publication, makapub, getAllUser, manaocommantera };
+
+const makamentaire = async (req, res) => {
+    try {
+        const response = await Comment.find();
+        console.log(response);
+        return res.send(response);
+
+    } catch (error) {
+        console.log(error);
+    }
+
+}
+
+
+module.exports = { inscrit, login, toususers, message, makamessage, messagemaj, publication, makapub, getAllUser, manaocommantera, makamentaire };
