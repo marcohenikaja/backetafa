@@ -14,6 +14,7 @@ router.get("/makamessage/:id/:ids", ctrl.makamessage);
 router.get("/messagemaj/:id/:ids", ctrl.messagemaj);
 router.get("/makapub", ctrl.makapub);
 router.get("/getAllUser", ctrl.getAllUser);
+router.get("/makamentaire", ctrl.makamentaire);
 
 
 router.put("/manaocommantera/:id", ctrl.manaocommantera);
