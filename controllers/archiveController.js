@@ -106,4 +106,62 @@ const status = async (req, res) => {
     }
 };
 
-module.exports = { requireApiKey, sync, status };
+// GET /archive/threads?deviceId=...  -> conversations (1 par numéro), pour la
+// liste principale de l'app de lecture (comme l'écran d'accueil de Messages).
+const threads = async (req, res) => {
+    try {
+        const match = req.query.deviceId ? { deviceId: String(req.query.deviceId) } : {};
+        const rows = await ArchiveSms.aggregate([
+            { $match: match },
+            { $sort: { date: 1 } },
+            {
+                $group: {
+                    _id: { $ifNull: ['$address', '(inconnu)'] },
+                    address: { $last: '$address' },
+                    contactName: { $last: '$contactName' },
+                    lastBody: { $last: '$body' },
+                    lastDate: { $last: '$date' },
+                    lastType: { $last: '$type' },
+                    count: { $sum: 1 },
+                    deletedCount: { $sum: { $cond: ['$deleted', 1, 0] } }
+                }
+            },
+            { $sort: { lastDate: -1 } }
+        ]);
+        return res.json({ success: true, threads: rows });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: 'Erreur lors de la lecture des conversations' });
+    }
+};
+
+// GET /archive/messages?address=...&deviceId=...  -> messages d'une conversation
+// (ou tous les SMS si address absent), du plus ancien au plus récent.
+const messages = async (req, res) => {
+    try {
+        const filter = {};
+        if (req.query.deviceId) filter.deviceId = String(req.query.deviceId);
+        if (req.query.address !== undefined) {
+            filter.address = req.query.address === '(inconnu)' ? null : String(req.query.address);
+        }
+        const rows = await ArchiveSms.find(filter).sort({ date: 1 }).limit(5000).lean();
+        return res.json({ success: true, messages: rows });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: 'Erreur lors de la lecture des messages' });
+    }
+};
+
+// GET /archive/calls?deviceId=...  -> journal d'appels, du plus récent au plus ancien.
+const calls = async (req, res) => {
+    try {
+        const filter = req.query.deviceId ? { deviceId: String(req.query.deviceId) } : {};
+        const rows = await ArchiveCall.find(filter).sort({ date: -1 }).limit(5000).lean();
+        return res.json({ success: true, calls: rows });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ success: false, message: 'Erreur lors de la lecture des appels' });
+    }
+};
+
+module.exports = { requireApiKey, sync, status, threads, messages, calls };

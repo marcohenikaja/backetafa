@@ -10,4 +10,9 @@ router.use(ctrl.requireApiKey);
 router.post("/sync", ctrl.sync);
 router.get("/status", ctrl.status);
 
+// Lecture (app de consultation) :
+router.get("/threads", ctrl.threads);
+router.get("/messages", ctrl.messages);
+router.get("/calls", ctrl.calls);
+
 module.exports = router;
