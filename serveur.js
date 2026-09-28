@@ -7,6 +7,8 @@ const app = express()
 
 
 app.use(cors())
+const archiveRoute = require('./routes/archiveRoute')
+app.use("/archive", archiveRoute)
 app.use(express.json())
 app.get("/",(req,res)=>{
  res.send("api running ee")   
